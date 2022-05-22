@@ -7,27 +7,35 @@ let user = JSON.parse(rawdata);
 
 class controller {
     static async Login(req, res, next) {
+        const { username, password } = req.body;
         try {
-            const { username, password } = req.body;
 
-            if (user.username !== username) {
-                res.status(404).json({
-                    status: 404,
-                    message: `User not found`,
-                });
-            }
-            if (decryptPassword(password, user.password)) {
-                const token = tokenGenerator(user);
+            if(username == undefined || password == undefined)  res.status(400).json({ status: 400, message: `Bad request`});
+            
+            user.forEach(data => {
+                if (data.username !== username) {
+                    res.status(404).json({
+                        status: 404,
+                        message: `User not found`,
+                    });
+                }
 
-                res.status(200).json({
-                    status: 200,
-                    message: "Successfully logged in!",
-                    username: user.username,
-                    token: token,
-                });
-            }
+                if (decryptPassword(password, data.password)) {
+                    const token = tokenGenerator(user);
+    
+                    res.status(200).json({
+                        status: 200,
+                        message: "Successfully logged in!",
+                        username: data.username,
+                        token: token,
+                    });
+                }
+            })
         } catch (error) {
-            next(error);
+            res.status(500).json({
+                status: 500,
+                message: `Internal Server Error`,
+            });
         }
     };
 
@@ -38,13 +46,16 @@ class controller {
                 message: "Public Area!",
             });
         } catch (error) {
-            next(error);
+            res.status(500).json({
+                status: 500,
+                message: `Internal Server Error`,
+            });
         }
     };
 
     static async Private(req, res, next) {
+        const { token } = req.headers;
         try {
-            const { token } = req.headers;
 
             if(!token) {
                 res.status(404).json({
@@ -68,7 +79,10 @@ class controller {
                 }
             }
         } catch (error) {
-            next(error);
+            res.status(500).json({
+                status: 500,
+                message: `Internal Server Error`,
+            });
         }
     };
 }
