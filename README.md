@@ -37,4 +37,6 @@ npm run dev
 Open a browser and put localhost:3000 to see the front end
 ```
 
-#
+# - 
+I usually do manual testing for the api before I send it to the front end (or before I used it in front end). I used Postman as the tool to test. I will look at validation and functionality wbile testing the API. I make sure the API get the right data and give right status. Also, I also make sure the API send data as soon as possible and consistent.
+Normally, I write a plan on a paper to test the API. What needs to do then fix it.
